@@ -1,60 +1,76 @@
+----------------------------------------------------
+HASH		BITS			BYTES
+----------------------------------------------------
 CRC:
-BSD checksum	16 bits
-Checksum	32 bits
-CRC-16		16 bits
-CRC-32		32 bits
-CRC-32 MPEG-2	32 bits
-CRC-64		64 bits
-SYSV checksum	16 bits
+----------------------------------------------------
+BSD checksum	16 bits			2
+Checksum	32 bits			4
+CRC-16		16 bits			2
+CRC-32		32 bits			4
+CRC-32 MPEG-2	32 bits			4
+CRC-64		64 bits			8
+SYSV checksum	16 bits			2
 
+----------------------------------------------------
+HASH		BITS			BYTES
+----------------------------------------------------
 CHECKSUMS:
-sum (Unix)	16 or 32 bits
-sum8		8 bits
-sum16		16 bits
-sum24		24 bits
-sum32		32 bits
-fletcher-4	4 bits
-fletcher-8	8 bits
-fletcher-16	16 bits
-fletcher-32	32 bits
-Adler-32	32 bits
-xor8		8 bits
+----------------------------------------------------
+sum (Unix)	16 or 32 bits		2 or 4
+sum8		8 bits			1
+sum16		16 bits			2
+sum24		24 bits			3
+sum32		32 bits			4
+fletcher-4	4 bits			.5
+fletcher-8	8 bits			1
+fletcher-16	16 bits			2
+fletcher-32	32 bits			4
+Adler-32	32 bits			4
+xor8		8 bits			1
 
+----------------------------------------------------
+HASH		BITS			BYTES
+----------------------------------------------------
 KEYED CRYPTOGRAPHIC HASH:
-BLAKE2		up to 512 bits
-Poly1305-AES	128 bits	
-SipHash		64 bits		
-MD6		512 bits
+----------------------------------------------------
+BLAKE2		up to 512 bits		up to 64
+Poly1305-AES	128 bits		16	
+SipHash		64 bits			8
+MD6		512 bits		64
 
+----------------------------------------------------
+HASH		BITS			BYTES
+----------------------------------------------------
 UNKEYED CRYPTOGRAPHIC HASH:
-BLAKE-256	256 bits
-BLAKE-512	512 bits
-BLAKE2s		Up to 256 bits
-BLAKE2b		Up to 512 bits
-ECOH		224 to 512 bits
-FSB		160 to 512 bits
-GOST		256 bits
-Grøstl		Up to 512 bits
-HAS-160		160 bits
-HAVAL		128 to 256 bits
-JH		224 to 512 bits
-MD2		128 bits
-MD4		128 bits
-MD5		128 bits
-MD6		Up to 512 bits
-RadioGatún	Up to 1216 bits
-RIPEMD		128 bits
-RIPEMD-128	128 bits
-RIPEMD-160	160 bits
-RIPEMD-320	320 bits
-SHA-1		160 bits
-SHA-224		224 bits
-SHA-256		256 bits
-SHA-384		384 bits
-SHA-512		512 bits
-Snefru		128 or 256 bits
-Spectral Hash	512 bits
-Streebog	256 or 512 bits
-SWIFFT		512 bits
-Tiger		192 bits
-Whirlpool	512 bits
+----------------------------------------------------
+BLAKE-256	256 bits		32	
+BLAKE-512	512 bits		64
+BLAKE2s		Up to 256 bits		up to 32
+BLAKE2b		Up to 512 bits		up to 64
+ECOH		224 to 512 bits		28 to 64
+FSB		160 to 512 bits		20 to 64
+GOST		256 bits		32
+Grøstl		Up to 512 bits		up to 64
+HAS-160		160 bits		20	
+HAVAL		128 to 256 bits		16 to 32
+JH		224 to 512 bits		28 to 64
+MD2		128 bits		16
+MD4		128 bits		16
+MD5		128 bits		16
+MD6		Up to 512 bits		up to 64
+RadioGatún	Up to 1216 bits		up to 152
+RIPEMD		128 bits		16
+RIPEMD-128	128 bits		16
+RIPEMD-160	160 bits		20
+RIPEMD-320	320 bits		40
+SHA-1		160 bits		20
+SHA-224		224 bits		28
+SHA-256		256 bits		32
+SHA-384		384 bits		48
+SHA-512		512 bits		64
+Snefru		128 or 256 bits		16 or 32
+Spectral Hash	512 bits		64
+Streebog	256 or 512 bits		32 or 64
+SWIFFT		512 bits		64
+Tiger		192 bits		24
+Whirlpool	512 bits		64
