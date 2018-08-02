@@ -95,3 +95,21 @@ MD5			Length:  128 bits, 16 bytes
 ======> encoding can be determined by looking at the character sets being used!!! <=========
 
 ======>  Look up statndard entropies for hashes and encryption!!! <=========================
+
+
+Microsoft Windows [Version 6.1.7601]
+Copyright (c) 2009 Microsoft Corporation.  All rights reserved.
+
+C:\Users\XXXXXXX>python
+Python 3.6.4 (v3.6.4:d48eceb, Dec 19 2017, 06:04:45) [MSC v.1900 32 bit (Intel)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import codecs
+>>> decode_hex = codecs.getdecoder("hex_codec")
+>>> hex_str = "68656c6c6f207468657265"
+>>> decoded_str = decode_hex(hex_str)
+>>> print(decoded_str)
+(b'hello there', 22)
+>>> decoded_str = decode_hex(hex_str)[0]
+>>> print(decoded_str)
+b'hello there'
+>>>
