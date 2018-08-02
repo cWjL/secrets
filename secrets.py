@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import sys, math, argparse
+import sys, math, argparse, enchant, string
 import colorama
 from colorama import Fore, Style
 
@@ -34,6 +34,47 @@ def _get_entropy_known_length(secret):
             _entropy += - p_i*math.log(p_i, 2)
     return _entropy
 
+def _get_entropy_unknown_length(secret_str):
+    if len(secret_str) < 2:
+        return 0
+    _entropy = 0
+
+def _find_plaintext_passwd(data):
+    '''
+    Function to parse given data for readable strings
+
+    @type data: string
+    @param data: the data to be parsed
+    @type alpha_list: string
+    @rtype: string, None
+    @return: string if found, None otherwise
+    '''
+
+    ###  THIS IS BROKEN  ###
+    ###  Check the if len(poss_word) == len(data) ###
+    
+    alpha = ['bcdefghjklmnopqrstuvwxyz']
+    index = 0
+    poss_word = ''
+    str_dict = enchant.Dict("en_US")
+    data = data.lower()
+    data_length = len(data)
+    string_length = 0
+    for i in range(len(data)+1):
+        try:
+            if all(c in string.printable for c in data):
+                if i > 1 and (data[index:i] not in alpha) and (str_dict.check(data[index:i] or data[index:i] == ' ')):
+                    poss_word = poss_word + data[index:i]
+                    index = i
+                    string_length += 1
+                    if len(poss_word) == len(data) or (len(poss_word) == (len(data)-1)) or (len(poss_word) == (len(data)+1)):
+                        return poss_word
+        except Exception as e:
+            print("Exception in check_words()"+str(e))
+            continue
+    return None
+
 if __name__ == "__main__":
     colorama.init()
-    main(sys.argv[1])
+    #main(sys.argv[1])
+    print(_find_plaintext_passwd(sys.argv[1]))
