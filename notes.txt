@@ -74,3 +74,15 @@ Streebog	256 or 512 bits		32 or 64
 SWIFFT		512 bits		64
 Tiger		192 bits		24
 Whirlpool	512 bits		64
+
+EX HASHES:
+
+SHA256		Length: 256 bits, 32 bytes (Hex encoded string. Every two chars represent a character)
+
+"hello"		5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03
+"goodbye"	71573b922a87abc3fd1a957f2cfa09d9e16998567dd878a85e12166112751806
+
+MD5			Length:  128 bits, 16 bytes
+
+"hello"		b1946ac92492d2347c6235b4d2611184	
+"goodbye"	32d6c11747e03715521007d8c84b5aff
