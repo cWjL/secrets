@@ -12,19 +12,19 @@ def main(in_file):
     global g_prefix
     global b_prefix
     res_dict = []
-    #res = _get_entropy_known_length(in_file)
-    strings = list(_find_plaintext_strings(in_file))
-    for item in strings:
-        if _get_entropy_known_length(item) > 4.0:
-            res_dict.append((item, _get_entropy_known_length(item)))
+    res = _get_entropy_known_length(in_file)
+    #strings = list(_find_plaintext_strings(in_file))
+    #for item in strings:
+    #    if _get_entropy_known_length(item) > 4.0:
+    #        res_dict.append((item, _get_entropy_known_length(item)))
 
-    for item in res_dict:
-        print(g_prefix+item[0].replace('\n', '')+" "+str(item[1]))
-    #if res is not 0:
-    #    print(g_prefix+"Input String "+in_file)
-    #    print(g_prefix+"Shannon Entropy: "+str(res))
-    #else:
-    #    print(b_prefix+"Something went wrong")
+    #for item in res_dict:
+    #    print(g_prefix+item[0].replace('\n', '')+" "+str(item[1]))
+    if res is not 0:
+        print(g_prefix+"Input String "+in_file)
+        print(g_prefix+"Shannon Entropy: "+str(res))
+    else:
+        print(b_prefix+"Something went wrong")
     sys.exit(0)
 
 # Naming per pep-8: non-public methods and instance variables
