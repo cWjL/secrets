@@ -78,14 +78,28 @@ Whirlpool	512 bits		64
 EX HASHES:
 
 SHA256		Length: 256 bits, 32 bytes (Hex encoded string. Every two chars represent a character)
+----------------------------------------------------------------------------------------------------------------------------
+STRING								HASH																ENTROPY
+----------------------------------------------------------------------------------------------------------------------------
 
-"hello"		5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03
-"goodbye"	71573b922a87abc3fd1a957f2cfa09d9e16998567dd878a85e12166112751806
+"hello"								5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03	3.808267877819773
+"goodbye"							71573b922a87abc3fd1a957f2cfa09d9e16998567dd878a85e12166112751806	3.7521174396411276
+"You are Gay"						341df93c112e4c2631f01921ce977ce343c526a3515c8d7ff8e46717c903b610	3.7976295406163905
+"Which is fine, not a homophobe"	322a127551f4cbd06c4113133d74468e7a4ad698b1bbaf8cb32400a8bab3a697	3.8422350558081617
 
 MD5			Length:  128 bits, 16 bytes
+-------------------------------------------------------------------------------------------------
+STRING								HASH								ENTROPY
+-------------------------------------------------------------------------------------------------
 
-"hello"		b1946ac92492d2347c6235b4d2611184	
-"goodbye"	32d6c11747e03715521007d8c84b5aff
+"hello"								b1946ac92492d2347c6235b4d2611184	3.4772170014624826
+"goodbye"							32d6c11747e03715521007d8c84b5aff	3.765319531114783
+"You are Gay"						d55c5ec8ad71d3383bb5cef8863bd36c	3.3636085007312415
+"Which is fine, not a homophobe"	e9c7db9b229749d8c170c859e217f172	3.4772170014624826
+
+RSA
+
+MIICXAIBAAKBgQCqGKukO1De7zhZj6+H0qtjTkVxwTCpvKe4eCZ0FPqri0cb2JZfXJ/DgYSF6vUpwmJG8wVQZKjeGcjDOL5UlsuusFncCzWBQ7RKNUSesmQRMSGkVb1/3j+skZ6UtW+5u09lHNsj6tQ51s1SPrCBkedbNf0Tp0GbMJDyR4e9T04ZZwIDAQABAoGAFijko56+qGyN8M0RVyaRAXz++xTqHBLh3tx4VgMtrQ+WEgCjhoTwo23KMBAuJGSYnRmoBZM3lMfTKevIkAidPExvYCdm5dYq3XToLkkLv5L2pIIVOFMDG+KESnAFV7l2c+cnzRMW0+b6f8mR1CJzZuxVLL6Q02fvLi55/mbSYxECQQDeAw6fiIQXGukBI4eMZZt4nscy2o12KyYner3VpoeE+Np2q+Z3pvAMd/aNzQ/W9WaI+NRfcxUJrmfPwIGm63ilAkEAxCL5HQb2bQr4ByorcMWm/hEP2MZzROV73yF41hPsRC9m66KrheO9HPTJuo3/9s5p+sqGxOlFL0NDt4SkosjgGwJAFklyR1uZ/wPJjj611cdBcztlPdqoxssQGnh85BzCj/u3WqBpE2vjvyyvyI5kX6zk7S0ljKtt2jny2+00VsBerQJBAJGC1Mg5Oydo5NwD6BiROrPxGo2bpTbu/fhrT8ebHkTz2eplU9VQQSQzY1oZMVX8i1m5WUTLPz2yLJIBQVdXqhMCQBGoiuSoSjafUhV7i1cEGpb88h5NBYZzWXGZ37sJ5QsW+sJyoNde3xH8vdXhzU7eT82D6X/scw9RZz+/6rCJ4p0=
 
 
 5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03hellothere71573b922a87abc3fd1a957f2cfa09d9e16998567dd878a85e12166112751806
@@ -94,7 +108,7 @@ MD5			Length:  128 bits, 16 bytes
 
 ======> encoding can be determined by looking at the character sets being used!!! <=========
 
-======>  Look up statndard entropies for hashes and encryption!!! <=========================
+======> Look up statndard entropies for hashes and encryption!!!  <=========================
 
 
 Microsoft Windows [Version 6.1.7601]
