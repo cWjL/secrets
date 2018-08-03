@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import sys, math, argparse, enchant, string
+import sys, math, argparse, enchant, string, codecs, binascii
 import colorama
 from colorama import Fore, Style
 
@@ -12,19 +12,19 @@ def main(in_file):
     global g_prefix
     global b_prefix
     res_dict = []
-    res = _get_entropy_known_length(in_file)
-    #strings = list(_find_plaintext_strings(in_file))
-    #for item in strings:
-    #    if _get_entropy_known_length(item) > 4.0:
-    #        res_dict.append((item, _get_entropy_known_length(item)))
+    #res = _get_entropy_known_length(in_file)
+    strings = list(_find_printable_strings(in_file))
+    for item in strings:
+        if _get_entropy_known_length(item) > 3.9:
+            res_dict.append((item, _get_entropy_known_length(item)))
 
-    #for item in res_dict:
-    #    print(g_prefix+item[0].replace('\n', '')+" "+str(item[1]))
-    if res is not 0:
-        print(g_prefix+"Input String "+in_file)
-        print(g_prefix+"Shannon Entropy: "+str(res))
-    else:
-        print(b_prefix+"Something went wrong")
+    for item in res_dict:
+        print(g_prefix+item[0]+" "+str(item[1]))
+    #if res is not 0:
+    #    print(g_prefix+"Input String "+in_file)
+    #    print(g_prefix+"Shannon Entropy: "+str(res))
+    #else:
+    #    print(b_prefix+"Something went wrong")
     sys.exit(0)
 
 # Naming per pep-8: non-public methods and instance variables
@@ -51,28 +51,94 @@ def _get_entropy_known_length(secret):
             _entropy += - p_i*math.log(p_i, 2)
     return _entropy
 
-def _find_plaintext_strings(data, min=4):
+def _find_printable_strings(data, min=4):
     '''
     Function to parse given file for strings of printable
-    characters
+    characters.  Newlines and tabs filtered.
     
     @param  string filepath
     @param  integer min length of string (default=4)
     @return generator strings
     '''    
     with open(data, errors="ignore") as f:
-        result = ""
+        _result = ""
         for i in f.read():
-            if i in string.printable:
-                result += i
+            if i in string.printable and "\n" not in i  and "\t" not in i:
+                _result += i
+                continue # next loop iteration, skipping the next if statement
+            if len(_result) >= min:
+                yield _result
+            _result = ""
+        if len(_result) >= min:
+            yield _result
+
+def _find_nonprintable_strings(data, min=16, max=64):
+    '''
+    Function to parse given file for strings of non-printable
+    characters (hex encoded) of length of at least 16
+    
+    @param  string filepath
+    @param  integer min length of string (default=16)
+    @param  integer max length of string (default=64)
+    @return generator non-printable characters
+    '''
+    with open(data, errors="ignore") as f:
+        _result = ""
+        for i in f.read():
+            if i not in string.printable:
+                _result += i
                 continue
-            if len(result) >= min:
-                yield result
-            result = ""
-        if len(result) >= min:
-            yield result
+            if len(_result) >= min:
+                yield repr(_result)
+            _result = ""
+        if len(_result) >= min:
+            yield repr(_result)
+
+def _decode_nonprintable_strings(nonprintable_list):    
+    _hex_str = ""
+    for i in nonprintable_list:
+        #print(i)
+        try:
+            print(i.replace('\\x', ''))
+            
+            _hex_str = i.replace('\\x', '')
+            #print("got here")
+            _decoded.append(binascii.a2b_hex(_hex_str.replace(' ', '')))
+        except Exception as ex:
+            #print(str(ex))
+            continue
+    return _decoded
+
+def _test(data):
+    '''
+    Test function.  Reads text file containing hex encoded strings,  
+    converts to ascii characters, then prints to stdout
+
+    @param filepath to data
+    @return none
+    '''
+    global g_prefix
+    global b_prefix
+    with open(data, 'r') as f:
+        hex_list = [line.replace('\\x', '').strip('\n') for line in f]
+
+    print(g_prefix+"Encoded hex values: ")
+    for item in hex_list:
+        print(g_prefix+item)
+        
+    print(g_prefix+"Decoded hex values: ")
+    for item in hex_list:
+        ###  Binascii is the way to go...this worked perfectly when codecs didn't  ###
+        print(g_prefix+str(binascii.a2b_hex(item.replace(' ', ''))))
+
+    sys.exit(0)
+    
 
 if __name__ == "__main__":
     colorama.init()
-    main(sys.argv[1])
-    #print(_find_plaintext_strings(sys.argv[1]))
+    #main(sys.argv[1])
+    #print(list(_find_printable_strings(sys.argv[1])))
+    #print(list(_find_nonprintable_strings(sys.argv[1])))
+    #print(repr(list(_find_nonprintable_strings(sys.argv[1]))))
+    print(_decode_nonprintable_strings(list(_find_nonprintable_strings(sys.argv[1]))))
+    #_test(sys.argv[1])
