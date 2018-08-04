@@ -94,7 +94,13 @@ def _find_nonprintable_strings(data, min=16, max=64):
         if len(_result) >= min:
             yield repr(_result)
 
-def _decode_nonprintable_strings(nonprintable_list):    
+def _decode_nonprintable_strings(nonprintable_list):
+    '''
+    Function to decode binary hex input
+
+    @param list of binary data
+    @return list of decoded strings
+    '''
     _hex_str = ""
     for i in nonprintable_list:
         #print(i)
@@ -108,6 +114,35 @@ def _decode_nonprintable_strings(nonprintable_list):
             #print(str(ex))
             continue
     return _decoded
+
+def _read_bin_data(data, size=8192):
+    '''
+    Function to read binary file in 'size' sized increments
+
+    @param binary data file path
+    '''
+    with open(data, "rb") as f:
+        while True:
+            chunk = f.read(size)
+            if chunk:
+                for b in chunk:
+                    yield b
+                else:
+                    break
+
+def _decode_bin_data(encoded_data):
+    '''
+    Decode hex data
+
+    Takes integer binary data, converts to bytestring, then converts and returns
+    string formatted hex value
+
+    @param hex encoded data
+    @return string
+    '''
+    hex_encoded = binascii.b2a_hex(encoded_data.to_bytes((encoded_data.bit_length() + 7) // 8, 'big'))
+    return binascii.a2b_hex(hex_encoded)
+            
 
 def _test(data):
     '''
@@ -140,5 +175,7 @@ if __name__ == "__main__":
     #print(list(_find_printable_strings(sys.argv[1])))
     #print(list(_find_nonprintable_strings(sys.argv[1])))
     #print(repr(list(_find_nonprintable_strings(sys.argv[1]))))
-    print(_decode_nonprintable_strings(list(_find_nonprintable_strings(sys.argv[1]))))
+    #print(_decode_nonprintable_strings(list(_find_nonprintable_strings(sys.argv[1]))))
     #_test(sys.argv[1])
+    for i in _read_bin_data(sys.argv[1]):
+        print(_decode_bin_data(i))
