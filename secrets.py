@@ -103,32 +103,35 @@ def _decode_nonprintable_strings(nonprintable_list):
     '''
     _hex_str = ""
     for i in nonprintable_list:
-        #print(i)
         try:
-            print(i.replace('\\x', ''))
-            
             _hex_str = i.replace('\\x', '')
-            #print("got here")
             _decoded.append(binascii.a2b_hex(_hex_str.replace(' ', '')))
         except Exception as ex:
-            #print(str(ex))
             continue
     return _decoded
 
-def _read_bin_data(data, size=8192):
+def _read_bin_data(data, data_size=256):
     '''
     Function to read binary file in 'size' sized increments
 
+    The file will be read and returned in 'chunksize' increments.
+
+    ###  TODO  ###
+    Read and return 256 bytes at a time, then look through <somebyte> increments
+    on the receiving end looking for interesting high entropy data.
+
     @param binary data file path
+    @return data_size chunk of binary data
     '''
     with open(data, "rb") as f:
         while True:
-            chunk = f.read(size)
+            chunk = f.read(data_size)
             if chunk:
-                for b in chunk:
-                    yield b
-                else:
-                    break
+                #for b in chunk:
+                #    yield b
+                yield from chunk
+            else:
+                break
 
 def _decode_bin_data(encoded_data):
     '''
