@@ -111,12 +111,7 @@ MIICXAIBAAKBgQCqGKukO1De7zhZj6+H0qtjTkVxwTCpvKe4eCZ0FPqri0cb2JZfXJ/DgYSF6vUpwmJG
 ======> Look up statndard entropies for hashes and encryption!!!  <=========================
 
 
-Microsoft Windows [Version 6.1.7601]
-Copyright (c) 2009 Microsoft Corporation.  All rights reserved.
-
-C:\Users\XXXXXXX>python
-Python 3.6.4 (v3.6.4:d48eceb, Dec 19 2017, 06:04:45) [MSC v.1900 32 bit (Intel)] on win32
-Type "help", "copyright", "credits" or "license" for more information.
+DECODE HEX STRING
 >>> import codecs
 >>> decode_hex = codecs.getdecoder("hex_codec")
 >>> hex_str = "68656c6c6f207468657265"
@@ -127,3 +122,39 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>> print(decoded_str)
 b'hello there'
 >>>
+
+
+>>> import codecs
+>>> decode_str = codecs.getdecoder("hex_codec")
+>>> encode_str = codecs.getencoder("hex_codec")
+>>> hex_str = "68656c6c6f207468657265"
+>>> hash_str = "b1946ac92492d2347c6235b4d2611184"
+>>> hexified_hash_str = encode_str(hash_str.encode("utf-8"))
+>>> print(hexified_hash_str)
+(b'6231393436616339323439326432333437633632333562346432363131313834', 32)
+>>> dehexified_hash_str = decode_str(hexified_hash_str[0])
+>>> print(dehexified_hash_str)
+(b'b1946ac92492d2347c6235b4d2611184', 64)
+
+--------------------------------------------------------------------------------------------
+BINARY => HEX
+
+binascii.b2a_hex(data)
+binascii.hexlify(data)
+Return the hexadecimal representation of the binary data. Every byte of data is converted into the corresponding 2-digit hex representation. The returned bytes object is therefore twice as long as the length of data.
+
+--------------------------------------------------------------------------------------------
+HEX => HEX STRING
+binascii.a2b_hex(hexstr)
+binascii.unhexlify(hexstr)
+Return the binary data represented by the hexadecimal string hexstr. This function is the inverse of b2a_hex(). hexstr must contain an even number of hexadecimal digits (which can be upper or lower case), otherwise an Error exception is raised.
+
+--------------------------------------------------------------------------------------------
+base64.b64decode(s, altchars=None, validate=False)
+Decode the Base64 encoded bytes-like object or ASCII string s and return the decoded bytes.
+
+Optional altchars must be a bytes-like object or ASCII string of at least length 2 (additional characters are ignored) which specifies the alternative alphabet used instead of the + and / characters.
+
+A binascii.Error exception is raised if s is incorrectly padded.
+
+If validate is False (the default), characters that are neither in the normal base-64 alphabet nor the alternative alphabet are discarded prior to the padding check. If validate is True, these non-alphabet characters in the input result in a binascii.Error.
