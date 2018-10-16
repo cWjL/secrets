@@ -12,7 +12,7 @@ def main(logpath):
 
     log = logging.getLogger(__name__)
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)-8s %(message)s',
-                        datefmt='%a, %d %b %Y %H:%M:%S', filename='logs/sec.log', filemode='w')
+                        datefmt='%a, %d %b %Y %H:%M:%S', filename=logpath+'sec.log', filemode='w')
 #    log.warning('this is a warning')
 #    log.error('this is an error')
 #    sys.exit(0)
