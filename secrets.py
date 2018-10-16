@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import sys, math, argparse, enchant, string, codecs, binascii
+import sys, math, argparse, string, codecs, binascii
 import colorama
 from colorama import Fore, Style
 
@@ -27,7 +27,6 @@ def main(in_file):
     #    print(b_prefix+"Something went wrong")
     sys.exit(0)
 
-# Naming per pep-8: non-public methods and instance variables
 def _get_entropy_known_length(secret):
     '''
     Function to parse given string and determine entropy 
