@@ -9,6 +9,7 @@ class Secret():
         self.log = log_obj
     
     def get_secrets(self):
+    
         if self.opt is None:
             tmp = "Run all methods"
             self.log.warning('Run all methods')
@@ -18,13 +19,28 @@ class Secret():
         elif self.opt == 0:
             tmp = "Run strings only"
             self.log.warning('Run strings only')
-            #from src.s_str import StringSec
+            from src.s_str import StringSec
+            string_sec = StringSec(self.bin, 4)
+            str_list = string_sec.get_strs()
+            # pass StringSec the binary file path
+            # StringSec reads binary,extracts strings and returns a list of them
+            # Secret() calculates the entropy of each string in the list, adds the string
+            # and calculated entropy to a dictionary and returns item
+            # DICT: https://www.w3schools.com/python/python_dictionaries.asp
+            '''
+                thisdict =	{
+                "brand": "Ford",
+                "model": "Mustang",
+                "year": 1964
+                }
+                x = thisdict["model"] or x = thisdict.get("model")
+            '''
         else:
             tmp = "Run encoded only"
             self.log.warning('Run encoded only')
             #from src.s_enc import EncodedSec
         return tmp
-        
+
     def _get_entropy_known_length(secret):
         '''
         Function to parse given string and determine entropy 
@@ -46,104 +62,9 @@ class Secret():
             p_i = float(secret.count(chr(i)))/len(secret)
             if p_i > 0:
                 _entropy += - p_i*math.log(p_i, 2)
+        
         return _entropy
-
-    def _find_printable_strings(data, min=4):
-        '''
-        Function to parse given file for strings of printable
-        characters.  Newlines and tabs filtered.
-        
-        @param  string filepath
-        @param  integer min length of string (default=4)
-        @return generator strings
-        '''    
-        with open(data, errors="ignore") as f:
-            _result = ""
-            for i in f.read():
-                if i in string.printable and "\n" not in i  and "\t" not in i:
-                    _result += i
-                    continue # next loop iteration, skipping the next if statement
-                if len(_result) >= min:
-                    yield _result
-                _result = ""
-            if len(_result) >= min:
-                yield _result
-
-    def _find_nonprintable_strings(data, min=16, max=64):
-        '''
-        Function to parse given file for strings of non-printable
-        characters (hex encoded) of length of at least 16
-        
-        @param  string filepath
-        @param  integer min length of string (default=16)
-        @param  integer max length of string (default=64)
-        @return generator non-printable characters
-        '''
-        with open(data, errors="ignore") as f:
-            _result = ""
-            for i in f.read():
-                if i not in string.printable:
-                    _result += i
-                    continue
-                if len(_result) >= min:
-                    yield repr(_result)
-                _result = ""
-            if len(_result) >= min:
-                yield repr(_result)
-
-    def _decode_nonprintable_strings(nonprintable_list):
-        '''
-        Function to decode binary hex input
-
-        @param list of binary data
-        @return list of decoded strings
-        '''
-        _hex_str = ""
-        for i in nonprintable_list:
-            try:
-                _hex_str = i.replace('\\x', '')
-                _decoded.append(binascii.a2b_hex(_hex_str.replace(' ', '')))
-            except Exception as ex:
-                continue
-        return _decoded
-
-    def _read_bin_data(data, data_size=256):
-        '''
-        Function to read binary file in 'size' sized increments
-
-        The file will be read and returned in 'chunksize' increments.
-
-        ###  TODO  ###
-        Read and return 256 bytes at a time, then look through <somebyte> increments
-        on the receiving end looking for interesting high entropy data.
-
-        @param binary data file path
-        @return data_size chunk of binary data
-        '''
-        with open(data, "rb") as f:
-            while True:
-                chunk = f.read(data_size)
-                if chunk:
-                    #for b in chunk:
-                    #    yield b
-                    yield from chunk
-                else:
-                    break
-
-    def _bin_to_hex_str(encoded_data):
-        '''
-        Decode binary data
-
-        Takes integer binary data, converts to bytestring, then converts and returns
-        string formatted hex value
-
-        @param binary data
-        @return string
-        '''
-        hex_encoded = binascii.b2a_hex(encoded_data.to_bytes((encoded_data.bit_length() + 7) // 8, 'big'))
-        return binascii.a2b_hex(hex_encoded)
-                
-
+           
     def _test(data):
         '''
         Test function.  Reads text file containing hex encoded strings,  
