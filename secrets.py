@@ -9,13 +9,8 @@ from src.secret import Secret
 def main(logpath):
     b_prefix = "["+Fore.RED+"*"+Style.RESET_ALL+"] "
     g_prefix = "["+Fore.GREEN+"*"+Style.RESET_ALL+"] "
+    in_file = None
 
-    log = logging.getLogger(__name__)
-    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)-8s %(message)s',
-                        datefmt='%a, %d %b %Y %H:%M:%S', filename=logpath+'sec.log', filemode='w')
-#    log.warning('this is a warning')
-#    log.error('this is an error')
-#    sys.exit(0)
     parser = argparse.ArgumentParser()
     parser.add_argument("-a",action='store_true',dest='all',help='Use all methods [DEFAULT OPTION]')
     parser.add_argument("-s",action='store_true',dest='str',help='Find ascii strings')
@@ -26,8 +21,20 @@ def main(logpath):
     reqd_args.add_argument('-i',action='store',dest='in_file',help='Input binary',required=True)
     
     args = parser.parse_args()
+
+    logpath = ck_path(logpath)
+    log = logging.getLogger(__name__)
+    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)-8s %(message)s',
+                        datefmt='%a, %d %b %Y %H:%M:%S', filename=logpath+'sec.log', filemode='w')
+    
     out_file = "secrets.txt"
-    in_file = None
+ 
+    if os.path.isfile(os.path.abspath(args.in_file)):
+        in_file = os.path.abspath(args.in_file)
+    else:
+        print(b_prefix+"Check your input file. Is it correct?")
+        log.error('Bad input file')
+        sys.exit(1)
     
     if args.out:
         if os.path.isdir(args.out):
@@ -40,10 +47,10 @@ def main(logpath):
         opt = None
     elif not args.enc and args.str:
         opt = 0
-    elif args.enc:
+    elif args.enc
         opt = 1
         
-    get_sec = Secret(args.in_file, log, opt)
+    get_sec = Secret(in_file, log, opt)
     tmpstr = get_sec.get_secrets()
     print(tmpstr)
     sys.exit(0)
