@@ -1,19 +1,23 @@
-import base64, binascii
+import binascii, base64
 
 class EncodedSec():
-    def __init__(self, bin_path, minlen=4):
-        self.min_len = minlen
+    def __init__(self, bin_path, chnk_sz):
+        self.chunk = chnk_sz
         self.bin_path = bin_path
 
     def get_strs(self):
-        #TODO get encoded string stuff
-        tmp = ""
-        for chunk in _read_bin_data(self.bin_path, 512):
-            do_stuff = None
-
-    def _decode_nonprintable_strings(nonprintable_list):
         '''
-        Function to decode binary hex input
+        
+        '''
+        _printable_strs = []
+        for cnk in self._read_bin_data(self.bin_path, self.chunk):
+            _byte_str = self._bin_to_hex_str(cnk)
+            if self._is_printable_char_str(_byte_str) is not None:
+                _printable_strs.append(self._is_printable_char_str(_byte_str))
+
+    def _decode_nonprintable_strings(self, nonprintable_list):
+        '''
+        Decode binary hex input
 
         @param list of binary data
         @return list of decoded strings
@@ -27,7 +31,24 @@ class EncodedSec():
                 continue
         return _decoded
 
-    def _bin_to_hex_str(encoded_data):
+    def _is_printable_char_str(self, hex_arr):
+        '''
+        Determine if hex array contains printable string, return it if so
+
+        @param hex array
+        @return string or none
+        '''
+        _result = ""
+        _decode = base64.b64decode(hex_arr)
+        for i in _decode:
+            if i in string.printable and "\n" not in i  and "\t" not in i:
+                _result += i
+                continue # next loop iteration, skipping the next if statement
+            if len(_result) >= self.min_len:
+                yield _result
+            _result = ""
+
+    def _bin_to_hex_str(self, encoded_data):
         '''
         Decode binary data
 
@@ -40,9 +61,9 @@ class EncodedSec():
         hex_encoded = binascii.b2a_hex(encoded_data.to_bytes((encoded_data.bit_length() + 7) // 8, 'big'))
         return binascii.a2b_hex(hex_encoded)
 
-    def _read_bin_data(data, data_size):
+    def _read_bin_data(self, data, data_size):
         '''
-        Function to read binary file in 'data_size' sized increments (bytes)
+        Read binary file in 'data_size' sized increments (bytes)
 
         The file will be read and returned in 'chunksize' increments.
 
