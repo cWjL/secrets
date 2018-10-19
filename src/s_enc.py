@@ -39,14 +39,18 @@ class EncodedSec():
         @return string or none
         '''
         _result = ""
-        _decode = base64.b64decode(hex_arr)
-        for i in _decode:
-            if i in string.printable and "\n" not in i  and "\t" not in i:
-                _result += i
-                continue # next loop iteration, skipping the next if statement
-            if len(_result) >= self.min_len:
-                yield _result
-            _result = ""
+        try:
+            _decode = base64.b64decode(hex_arr, validate=True)
+        except binascii.Error:
+            return None
+        retrun _result
+        # for i in _decode:
+            # if i in string.printable and "\n" not in i  and "\t" not in i:
+                # _result += i
+                # continue # next loop iteration, skipping the next if statement
+            # if len(_result) >= self.min_len:
+                # yield _result
+            # _result = ""
 
     def _bin_to_hex_str(self, encoded_data):
         '''
