@@ -1,49 +1,55 @@
 # -*- coding: utf-8 -*-
 
 import binascii, base64
+import math,sys
+from progressbar import ProgressBar
 
 class Secret():
     def __init__(self, bin, log_obj, opt=None):
         self.bin = bin
         self.opt = opt
         self.log = log_obj
+        if self._get_conf("ENT") is not None:
+            self.entropy = float(self._get_conf("ENT"))
+        if self._get_conf("CHUNK") is not None:
+            self.chunk = int(self._get_conf("CHUNK"))
     
     def get_secrets(self):
-    
+        '''
+        Determine option to run and import the appropriate module.  Returns tuple list
+        of the form (strings found, calculated entropy), or None if something went wrong
+
+        @param none
+        @return tuple (string, float)
+        '''
         if self.opt is None:
-            tmp = "Run all methods"
-            self.log.warning('Run all methods')
-            #from src.s_str import StringSec
-            #from src.s_enc import EncodedSec
-            #from src.s_dyn import DynamicSec # TODO implement this [floss?] https://github.com/fireeye/flare-floss
+            self.log.info('running all methods')
+            from src.s_str import StringSec
+            from src.s_enc import EncodedSec
+        
+            string_sec = StringSec(self.bin, 4)
+            str_list = string_sec.get_strs()
+            # need to return both string and encoded........
+            
         elif self.opt == 0:
-            tmp = "Run strings only"
-            self.log.warning('Run strings only')
+            self.log.info('running strings only')
             from src.s_str import StringSec
             string_sec = StringSec(self.bin, 4)
             str_list = string_sec.get_strs()
-            # pass StringSec the binary file path
-            # StringSec reads binary,extracts strings and returns a list of them
-            # Secret() calculates the entropy of each string in the list, adds the string
-            # and calculated entropy to a dictionary and returns item
-            # DICT: https://www.w3schools.com/python/python_dictionaries.asp
-            '''
-                thisdict =	{
-                "brand": "Ford",
-                "model": "Mustang",
-                "year": 1964
-                }
-                x = thisdict["model"] or x = thisdict.get("model")
-            '''
-        else:
-            tmp = "Run encoded only"
-            self.log.warning('Run encoded only')
-            #from src.s_enc import EncodedSec
-        return tmp
 
-    def _get_entropy_known_length(secret):
+        elif self.opt > 0:
+            tmp = "run encoded only"
+            self.log.info('running encoded only')
+            from src.s_enc import EncodedSec
+            enc_sec = EncodedSec(self.bin, self.chunk)
+            str_list = enc_sec.get_strs()
+            ####  NOT RETURNING ANYTHING.  SOMETHING BROKEN IN EncodedSec ###
+            
+        return self._get_sec_lst(str_list)
+
+    def _get_entropy(self, secret):
         '''
-        Function to parse given string and determine entropy 
+        Parse given string and determine entropy 
         based on SHANNON function. Higher double values 
         means input value with high entropy (potential secret)
 
@@ -57,13 +63,47 @@ class Secret():
         if len(secret) < 2:
             return 0
         _entropy = 0
-        # Find probabilities of ascii characters 0-255 in string 'secret'
         for i in range(256):
             p_i = float(secret.count(chr(i)))/len(secret)
             if p_i > 0:
                 _entropy += - p_i*math.log(p_i, 2)
         
         return _entropy
+
+    def _get_sec_lst(self, in_list):
+        '''
+        Return tuple in the form (string, entropy)
+
+        @param string list
+        @return tuple (string:float)
+        '''
+        bar = ProgressBar(maxval=len(in_list)).start()
+        _sec_lst = []
+        for i, item in enumerate(in_list):
+            if self._get_entropy(item) >= self.entropy:
+                _sec_lst.append((item, self._get_entropy(item)))
+            bar.update(i)
+        bar.finish()
+        return _sec_lst
+
+    def _get_conf(self, opt):
+        '''
+        Import configuration file and return 'opt' element
+        
+        @param option (string)
+        @return string
+        '''
+        conf_lines = []
+        with open('src/secrets.conf', 'r') as conf:
+            all_conf_lines = conf.readlines()
+            for line in all_conf_lines:
+                if '#' not in line:
+                    conf = line.split(' ')
+                    conf_lines.append((conf[0].replace('\n',''), conf[1].replace('\n', '')))
+        for item in conf_lines:
+            if opt in item[0]:
+                return item[1]
+        return None
            
     def _test(data):
         '''
