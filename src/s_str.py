@@ -37,4 +37,4 @@ class StringSec():
                 _result = ""
             if len(_result) >= self.min_len:
                 yield _result
-x
+
