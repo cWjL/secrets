@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import binascii, base64
+import string
 
 class StringSec():
     def __init__(self, bin_path, minlen=4):
@@ -14,17 +14,16 @@ class StringSec():
         @param  none
         @return string list
         ''' 
-        return list(_find_printable_strings(self.bin_path))
+        return list(self._find_printable_strings(self.bin_path))
         
             
 
-    def _find_printable_strings(data, min=4):
+    def _find_printable_strings(self, data):
         '''
         Function to parse given file for strings of printable
         characters.  Newlines and tabs filtered.
         
         @param  string filepath
-        @param  integer min length of string (default=4)
         @return generator strings
         '''    
         with open(data, errors="ignore") as f:
@@ -38,3 +37,4 @@ class StringSec():
                 _result = ""
             if len(_result) >= self.min_len:
                 yield _result
+x
