@@ -1,14 +1,20 @@
 #!/usr/bin/python3
-import sys,math,argparse,os,logging
+import sys,argparse,os,logging,csv
 import colorama
 from colorama import Fore, Style
 from src.secret import Secret
 
 #TODO add import of src/secret. 
 
-def main(logpath):
+def main():
+    '''
+    Entry main
+
+    @param path to log
+    '''
     b_prefix = "["+Fore.RED+"*"+Style.RESET_ALL+"] "
     g_prefix = "["+Fore.GREEN+"*"+Style.RESET_ALL+"] "
+    l_prefix = "["+Fore.YELLOW+">"+Style.RESET_ALL+"] "
     in_file = None
 
     parser = argparse.ArgumentParser()
@@ -22,10 +28,10 @@ def main(logpath):
     
     args = parser.parse_args()
 
-    logpath = ck_path(logpath)
+    #logpath = ck_path(logpath)
     log = logging.getLogger(__name__)
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)-8s %(message)s',
-                        datefmt='%a, %d %b %Y %H:%M:%S', filename=logpath+'sec.log', filemode='w')
+                        datefmt='%a, %d %b %Y %H:%M:%S', filename='logs/sec.log', filemode='w')
     
     out_file = "secrets.txt"
  
@@ -39,6 +45,7 @@ def main(logpath):
     if args.out:
         if os.path.isdir(args.out):
             out_file = ck_path(args.out)+out_file
+            log.info("output file "+out_file)
         else:
             print(b_prefix+"Check your output file path. Is it correct?")
             log.error('Bad output filepath')
@@ -47,20 +54,60 @@ def main(logpath):
         opt = None
     elif not args.enc and args.str:
         opt = 0
-    elif args.enc
+    elif args.enc:
         opt = 1
         
+    print(g_prefix+"Processing binary file...")
     get_sec = Secret(in_file, log, opt)
-    tmpstr = get_sec.get_secrets()
-    print(tmpstr)
+    sec_list = get_sec.get_secrets()
+    if sec_list is not None:
+        print(g_prefix+"Printing strings and associated entropy")
+        print(g_prefix+"Results will also be written to results/strings.txt, and results/strings.csv")
+        _write_to_terminal(sec_list, l_prefix)
+        _write_out("strings", sec_list)
+        log.info("wrote strings.txt and strings.csv to results/ dir")
+    #print(tmpstr)
+
     sys.exit(0)
 
-def write_out(out, out_list):
-    with open(out, 'w+') as wo:
+def _write_to_terminal(in_list, prefix):
+    '''
+    Write data to terminal with formatted prefix 'prefix'
+
+    @param data tuple
+    @param formatted prefix
+    @return none
+    '''
+    for item in in_list:
+        print(prefix+"\t"+item[0]+"\t"+str(item[1]))
+
+def _write_out(out_file, out_list):
+    '''
+    Write data to text and csv files.  Data is written results/
+    directory
+
+    @param filename
+    @param data tuple
+    @return none
+    '''
+    
+    with open("results/"+out_file+".txt", 'w+') as wo:
+        wo.write("Strings found in file\n\n")
         for line in out_list:
-            wo.write(line)
+            wo.write(line[0]+" "+str(line[1])+"\n")
+    with open("results/"+out_file+".csv", 'w+') as wo:
+        writer = csv.writer(wo)
+        writer.writerow(["Strings found in file"])
+        for line in out_list:
+            writer.writerow([line[0],line[1]])
     
 def ck_path(fp):
+    '''
+    Check for properly formatted file path
+
+    @param filepath
+    @return formatted filepath
+    '''
     if fp[len(fp)-1] == "\\" or fp[len(fp)-1] == "/":
         return fp
     else:
@@ -74,4 +121,6 @@ if __name__ == "__main__":
     colorama.init()
     if not os.path.exists("logs"):
         os.makedirs("logs")
-    main(os.path.abspath("logs"))
+    if not os.path.exists("results"):
+        os.makedirs("results")
+    main()
