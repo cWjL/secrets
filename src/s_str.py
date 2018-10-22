@@ -9,7 +9,7 @@ class StringSec():
 
     def get_strs(self):
         '''
-        Function to return list of printable strings
+        Return list of printable strings
         
         @param  none
         @return string list
@@ -20,7 +20,7 @@ class StringSec():
 
     def _find_printable_strings(self, data):
         '''
-        Function to parse given file for strings of printable
+        Parse given file for strings of printable
         characters.  Newlines and tabs filtered.
         
         @param  string filepath
