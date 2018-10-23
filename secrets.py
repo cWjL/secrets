@@ -63,7 +63,7 @@ def main():
     time.sleep(2)
     get_sec = Secret(in_file, log, opt)
     sec_list = get_sec.get_secrets()
-    if sec_list is not None:
+    if sec_list is not None and (len(sec_list) > 0):
         print(g_prefix+"Printing strings and associated entropy")
         time.sleep(2)
         _write_to_terminal(sec_list, l_prefix)
@@ -75,7 +75,7 @@ def main():
     else:
         print(g_prefix+"No strings were found")
         time.sleep(2)
-        print(g_prefix+"Exiting..")
+        print(g_prefix+"Exiting...")
         time.sleep(2)
         log.info("found no strings in "+in_file)
 
