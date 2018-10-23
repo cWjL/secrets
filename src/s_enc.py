@@ -1,4 +1,4 @@
-import binascii, base64, sys
+import binascii, base64
 
 class EncodedSec():
     def __init__(self, bin_path, chnk_sz):
@@ -19,13 +19,13 @@ class EncodedSec():
             except Exception as e:
                 self._less(cnk[:(len(cnk)-4)], _printable_strs)
 
-        tmp = self._get_printable_char_list(_printable_strs)
-        print("Length " + str(len(tmp)))
-        for i in tmp:
-            print(i)
-        sys.exit(0)
+        #tmp = self._get_printable_char_list(_printable_strs) #DEBUG
+        #print("Length " + str(len(tmp))) #DEBUG
+        #for i in tmp: #DEBUG
+        #    print(i) #DEBUG
+        #sys.exit(0) #DEBUG
 
-        #return _printable_strs
+        return self._get_printable_char_list(_printable_strs)
 
     def _less(self, data_cnk, lst):
         '''
@@ -36,26 +36,19 @@ class EncodedSec():
         @param string list
         @return string list
         '''
-        ### THIS IS BROKEN ###
-        ### RecursionError: maximum recursion depth exceeded in __instancecheck__
-        if len(data_cnk) == 0:
-            return
-        ####################################################################################
-        #tmp = data_cnk+b"\x3d\x3d\x3d"
-        #print(tmp)
-        #if b"\x3d\x3d\x3d" in tmp:
-        #    print("yep")
-        #sys.exit(0)
-        ####################################################################################
-        try:
-            lst.append(base64.b64decode(data_cnk))
-            self._less(data_cnk[:(len(data_cnk)-2)], lst)
-        except binascii.Error:
-            if b"\x3d\x3d\x3d" in data_cnk:
-                self._less(data_cnk[:(len(data_cnk)-6)], lst)
-            else:
-                self._less(data_cnk+b"\x3d", lst)
-            
+        while True:
+            if len(data_cnk) <= 0:
+                break
+            try:
+                lst.append(base64.b64decode(data_cnk))
+                break
+            except binascii.Error:
+                #print("cnk Length: "+str(len(data_cnk)), end='\r') #DEBUG
+                # try to add missing padding
+                if b"\x3d\x3d\x3d" in data_cnk:
+                    data_cnk = data_cnk[:(len(data_cnk)-5)]
+                else:
+                    data_cnk = data_cnk+b"\x3d"            
 
     def _decode(self, byte_in):
         '''
@@ -83,9 +76,14 @@ class EncodedSec():
         _result = []
         for i in hex_list:
             try:
-                _result.append(binascii.unhexlify(i))
+                _result.append(i.decode('utf-8'))
+                _result.append(i.decode('ascii'))
+                #_result.append(binascii.unhexlify(i))
             except:
                 continue
+        if len(_result) == 0:
+            return None
+        
         return _result
 
     def _bin_to_hex_str(self, encoded_data):
@@ -98,16 +96,14 @@ class EncodedSec():
         @param binary data
         @return string
         '''
-        hex_encoded = binascii.b2a_hex(encoded_data.to_bytes((encoded_data.bit_length() + 7) // 8, 'big'))
-        return binascii.a2b_hex(hex_encoded)
+        _hex_encoded = binascii.b2a_hex(encoded_data.to_bytes((encoded_data.bit_length() + 7) // 8, 'big'))
+        return binascii.a2b_hex(_hex_encoded)
 
     def _read_bin_data(self, data, data_size):
         '''
         Read binary file in 'data_size' sized increments (bytes)
 
         The file will be read and returned in 'chunksize' increments.
-
-        https://stackoverflow.com/a/1035456/4678883
 
         @param binary data file path
         @return data_size chunk of binary data
