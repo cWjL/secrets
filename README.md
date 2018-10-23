@@ -18,11 +18,11 @@ pip install colorama
 usage: secrets.py [-h] [-a] [-s] [-e] [-o OUT] -i IN_FILE
 
 optional arguments:
-  -h, --help  show this help message and exit<br />
-  -a          Use all methods [DEFAULT OPTION]<br />
-  -s          Find ascii strings<br />
-  -e          Find encoded strings, decode them, store them as ascii<br />
-  -o OUT      Output file [path only, I'll name it!]<br />
+  -h, --help  show this help message and exit
+  -a          Use all methods [DEFAULT OPTION]
+  -s          Find ascii strings
+  -e          Find encoded strings, decode them, store them as ascii
+  -o OUT      Output file [path only, I'll name it!]
 
 required arguments:
   -i IN_FILE  Input binary
