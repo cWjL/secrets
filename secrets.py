@@ -61,24 +61,28 @@ def main():
         
     print(g_prefix+"Processing binary file...")
     time.sleep(2)
-    get_sec = Secret(in_file, log, opt)
-    sec_list = get_sec.get_secrets()
-    if sec_list is not None and (len(sec_list) > 0):
-        print(g_prefix+"Printing strings and associated entropy")
-        time.sleep(2)
-        _write_to_terminal(sec_list, l_prefix)
-        _write_out("strings", sec_list)
-        print(g_prefix+"Results written to results/strings.txt, and results/strings.csv")
-        time.sleep(2)
-        print(g_prefix+"Exiting...")
-        log.info("wrote strings.txt and strings.csv to results/ dir")
-    else:
-        print(g_prefix+"No strings were found")
-        time.sleep(2)
-        print(g_prefix+"Exiting...")
-        time.sleep(2)
-        log.info("found no strings in "+in_file)
-
+    try:
+        get_sec = Secret(in_file, log, opt)
+        sec_list = get_sec.get_secrets()
+        if sec_list is not None and (len(sec_list) > 0):
+            print(g_prefix+"Printing strings and associated entropy")
+            time.sleep(2)
+            _write_to_terminal(sec_list, l_prefix)
+            _write_out("strings", sec_list)
+            print(g_prefix+"Results written to results/strings.txt, and results/strings.csv")
+            time.sleep(2)
+            print(g_prefix+"Exiting...")
+            log.info("wrote strings.txt and strings.csv to results/ dir")
+        else:
+            print(g_prefix+"No strings were found")
+            time.sleep(2)
+            print(g_prefix+"Exiting...")
+            time.sleep(2)
+            log.info("found no strings in "+in_file)
+    except Exception as e:
+        log.error("error: "+str(e))
+        sys.exit(1)
+        
     sys.exit(0)
 
 def _write_to_terminal(in_list, prefix):
