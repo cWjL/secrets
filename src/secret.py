@@ -22,7 +22,7 @@ class Secret():
         @return tuple (string, float)
         '''
         if self.opt is None:
-            self.log.info('running all methods')
+            self.log.info('running all plugins')
             from src.s_str import StringSec
             from src.s_enc import EncodedSec
         
@@ -32,13 +32,13 @@ class Secret():
             str_list = string_sec.get_strs() + enc_sec.get_strs()
             
         elif self.opt == 0:
-            self.log.info('running strings only')
+            self.log.info('running strings plugin only')
             from src.s_str import StringSec
             string_sec = StringSec(self.bin, 4)
             str_list = string_sec.get_strs()
 
         elif self.opt > 0:
-            self.log.info('running encoded only')
+            self.log.info('running encoded plugin only')
             from src.s_enc import EncodedSec
             enc_sec = EncodedSec(self.bin, self.chunk)
             str_list = enc_sec.get_strs()
