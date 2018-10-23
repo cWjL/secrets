@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import binascii, base64
-import math,sys
+import binascii, base64, math
 from progressbar import ProgressBar
 
 class Secret():
@@ -28,8 +27,9 @@ class Secret():
             from src.s_enc import EncodedSec
         
             string_sec = StringSec(self.bin, 4)
-            str_list = string_sec.get_strs()
-            # need to return both string and encoded........
+            enc_sec = EncodedSec(self.bin, self.chunk)
+            #print(enc_sec.get_strs()) #DEBUG
+            str_list = string_sec.get_strs() + enc_sec.get_strs()
             
         elif self.opt == 0:
             self.log.info('running strings only')
@@ -38,13 +38,11 @@ class Secret():
             str_list = string_sec.get_strs()
 
         elif self.opt > 0:
-            tmp = "run encoded only"
             self.log.info('running encoded only')
             from src.s_enc import EncodedSec
             enc_sec = EncodedSec(self.bin, self.chunk)
             str_list = enc_sec.get_strs()
-            ####  NOT RETURNING ANYTHING.  SOMETHING BROKEN IN EncodedSec ###
-            
+        self.log.info('analysis complete')
         return self._get_sec_lst(str_list)
 
     def _get_entropy(self, secret):
@@ -77,13 +75,13 @@ class Secret():
         @param string list
         @return tuple (string:float)
         '''
-        bar = ProgressBar(maxval=len(in_list)).start()
+        _bar = ProgressBar(maxval=len(in_list)).start()
         _sec_lst = []
         for i, item in enumerate(in_list):
             if self._get_entropy(item) >= self.entropy:
                 _sec_lst.append((item, self._get_entropy(item)))
-            bar.update(i)
-        bar.finish()
+            _bar.update(i)
+        _bar.finish()
         return _sec_lst
 
     def _get_conf(self, opt):
@@ -93,38 +91,14 @@ class Secret():
         @param option (string)
         @return string
         '''
-        conf_lines = []
+        _conf_lines = []
         with open('src/secrets.conf', 'r') as conf:
             all_conf_lines = conf.readlines()
             for line in all_conf_lines:
                 if '#' not in line:
                     conf = line.split(' ')
-                    conf_lines.append((conf[0].replace('\n',''), conf[1].replace('\n', '')))
-        for item in conf_lines:
+                    _conf_lines.append((conf[0].replace('\n',''), conf[1].replace('\n', '')))
+        for item in _conf_lines:
             if opt in item[0]:
                 return item[1]
         return None
-           
-    def _test(data):
-        '''
-        Test function.  Reads text file containing hex encoded strings,  
-        converts to ascii characters, then prints to stdout
-
-        @param filepath to data
-        @return none
-        '''
-        global g_prefix
-        global b_prefix
-        with open(data, 'r') as f:
-            hex_list = [line.replace('\\x', '').strip('\n') for line in f]
-
-        print(g_prefix+"Encoded hex values: ")
-        for item in hex_list:
-            print(g_prefix+item)
-            
-        print(g_prefix+"Decoded hex values: ")
-        for item in hex_list:
-            ###  Binascii is the way to go...this worked perfectly when codecs didn't  ###
-            print(g_prefix+str(binascii.a2b_hex(item.replace(' ', ''))))
-
-        sys.exit(0)
