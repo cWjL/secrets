@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+# -*- coding: utf-8 -*-
 import sys,argparse,os,logging,csv,time
 import colorama
 from colorama import Fore, Style
