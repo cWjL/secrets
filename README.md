@@ -13,6 +13,10 @@ The following two directories will be created in the ```secrets.py``` root direc
 pip install colorama
 ```
 
+**System Requirements:**
+
+&nbsp;&nbsp;python 3
+
 **Usage:**
 ```
 usage: secrets.py [-h] [-a] [-s] [-e] [-o OUT] -i IN_FILE
