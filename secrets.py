@@ -80,6 +80,7 @@ def main():
             time.sleep(2)
             log.info("found no strings in "+in_file)
     except Exception as e:
+        print(b_prefix+"Error has occured. Check log for details")
         log.error("error: "+str(e))
         sys.exit(1)
         
