@@ -7,6 +7,7 @@ The following two directories will be created in the ```secrets.py``` root direc
 
 
 **Package requirements:**
+
 &nbsp;&nbsp;colorama
 ```
 pip install colorama
