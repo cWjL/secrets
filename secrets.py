@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-import sys,argparse,os,logging,csv,time
+import sys,argparse,os,logging,csv,time,traceback,re
 import colorama
 from colorama import Fore, Style
 from src.secret import Secret
@@ -82,6 +82,7 @@ def main():
     except Exception as e:
         print(b_prefix+"Error has occured. Check log for details")
         log.error("error: "+str(e))
+        log.error(traceback.format_exc())
         sys.exit(1)
         
     sys.exit(0)
@@ -89,18 +90,24 @@ def main():
 def _write_to_terminal(in_list, prefix):
     '''
     Write data to terminal with formatted prefix 'prefix'
+    
+    [] must be filtered out in order to print to terminal. The 
+    unfiltered string will be written to the text and csv output files
 
     @param data tuple
     @param formatted prefix
     @return none
     '''
     for item in in_list:
-        print(prefix+"\t"+item[0]+"\t"+item[1])
+        print(prefix+"\t"+re.sub('[]', '', item[0])+"\t"+str(item[1]))
 
 def _write_out(out_file, out_list):
     '''
     Write data to text and csv files.  Data is written results/
     directory
+    
+    To read UTF-8 formatted output, open text file in a properly formatted reader
+    (notepad++, emacs, nano, etc.)
 
     @param filename
     @param data tuple
@@ -111,7 +118,7 @@ def _write_out(out_file, out_list):
         wo.write("Strings found in file\n\n")
         for line in out_list:
             wo.write(line[0]+" "+str(line[1])+"\n")
-    with open("results/"+out_file+".csv", 'w+') as wo:
+    with open("results/"+out_file+".csv", 'w+', newline='', encoding='utf-8') as wo:
         writer = csv.writer(wo)
         writer.writerow(["Strings found in file"])
         for line in out_list:
