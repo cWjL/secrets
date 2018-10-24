@@ -95,7 +95,7 @@ def _write_to_terminal(in_list, prefix):
     @return none
     '''
     for item in in_list:
-        print(prefix+"\t"+item[0]+"\t"+str(item[1]))
+        print(prefix+"\t"+item[0]+"\t"+item[1])
 
 def _write_out(out_file, out_list):
     '''
