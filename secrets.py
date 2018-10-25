@@ -1,11 +1,10 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
+
 import sys,argparse,os,logging,csv,time,traceback,re
 import colorama
 from colorama import Fore, Style
 from src.secret import Secret
-
-#TODO add import of src/secret. 
 
 def main():
     '''
@@ -33,8 +32,6 @@ def main():
     log = logging.getLogger(__name__)
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)-8s %(message)s',
                         datefmt='%a, %d %b %Y %H:%M:%S', filename='logs/sec.log', filemode='w')
-    
-    out_file = "secrets.txt"
  
     if os.path.isfile(os.path.abspath(args.in_file)):
         in_file = os.path.abspath(args.in_file)
@@ -43,11 +40,13 @@ def main():
         print(b_prefix+"Check your input file. Is it correct?")
         log.error("bad input file: "+args.in_file)
         sys.exit(1)
+        
+    out_file = "results/"+_get_bin_name(in_file)
     
     if args.out:
         if os.path.isdir(args.out):
-            out_file = ck_path(args.out)+out_file
-            log.info("output file location "+out_file+" found")
+            out_file = ck_path(args.out)+_get_bin_name(in_file)
+            log.info("output file location for "+out_file+" found")
         else:
             print(b_prefix+"Check your output file path. Is it correct?")
             log.error("bad output filepath: "+args.out)
@@ -68,11 +67,11 @@ def main():
             print(g_prefix+"Printing strings and associated entropy")
             time.sleep(2)
             _write_to_terminal(sec_list, l_prefix)
-            _write_out("strings", sec_list)
-            print(g_prefix+"Results written to results/strings.txt, and results/strings.csv")
+            _write_out(out_file, sec_list)
+            print(g_prefix+"Results written to "+out_file+".txt"+", and "+out_file+".csv")
             time.sleep(2)
             print(g_prefix+"Exiting...")
-            log.info("wrote strings.txt and strings.csv to results/ dir")
+            log.info("wrote "+out_file+".txt"+" and "+out_file+".csv")
         else:
             print(g_prefix+"No strings were found")
             time.sleep(2)
@@ -86,6 +85,12 @@ def main():
         sys.exit(1)
         
     sys.exit(0)
+    
+def _get_bin_name(in_file):
+    if '\\' in in_file:
+        return in_file[in_file.rfind('\\')+1:]
+    else:
+        return in_file[in_file.rfind('/')+1:]
 
 def _write_to_terminal(in_list, prefix):
     '''
@@ -104,7 +109,7 @@ def _write_to_terminal(in_list, prefix):
 def _write_out(out_file, out_list):
     '''
     Write data to text and csv files.  Data is written results/
-    directory
+    directory, unless otherwise specified with '-o' option
     
     To read UTF-8 formatted output, open text file in a properly formatted reader
     (notepad++, emacs, nano, etc.)
@@ -113,12 +118,11 @@ def _write_out(out_file, out_list):
     @param data tuple
     @return none
     '''
-    
-    with open("results/"+out_file+".txt", 'w+') as wo:
+    with open(out_file+".txt", 'w+') as wo:
         wo.write("Strings found in file\n\n")
         for line in out_list:
             wo.write(line[0]+" "+str(line[1])+"\n")
-    with open("results/"+out_file+".csv", 'w+', newline='', encoding='utf-8') as wo:
+    with open(out_file+".csv", 'w+', newline='', encoding='utf-8') as wo:
         writer = csv.writer(wo)
         writer.writerow(["Strings found in file"])
         for line in out_list:

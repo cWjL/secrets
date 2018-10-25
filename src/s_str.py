@@ -13,11 +13,14 @@ class StringSec():
         
         @param  none
         @return string list
-        ''' 
-        return list(self._find_printable_strings(self.bin_path))
+        '''
+        _tmp_lst = list(self._find_printable_strings(self.bin_path))
         
+        if _tmp_lst is not None and len(_tmp_lst) > 0:
+            return _tmp_lst
+        else:
+            return _tmp_lst.append("No strings found")   
             
-
     def _find_printable_strings(self, data):
         '''
         Parse given file for strings of printable

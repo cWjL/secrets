@@ -28,18 +28,19 @@ class Secret():
         
             string_sec = StringSec(self.bin, 4)
             enc_sec = EncodedSec(self.bin, self.chunk)
-            #print(enc_sec.get_strs()) #DEBUG
             str_list = string_sec.get_strs() + enc_sec.get_strs()
             
         elif self.opt == 0:
             self.log.info('running strings plugin only')
             from src.s_str import StringSec
+            
             string_sec = StringSec(self.bin, 4)
             str_list = string_sec.get_strs()
 
         elif self.opt > 0:
             self.log.info('running encoded plugin only')
             from src.s_enc import EncodedSec
+            
             enc_sec = EncodedSec(self.bin, self.chunk)
             str_list = enc_sec.get_strs()
         self.log.info('analysis complete')
@@ -75,11 +76,16 @@ class Secret():
         @param string list
         @return tuple (string:float)
         '''
+        _NO_STRS = "No strings found"
+        _NO_ENC_STRS = "No encoded strings found"
         _bar = ProgressBar(maxval=len(in_list)).start()
         _sec_lst = []
         for i, item in enumerate(in_list):
-            if self._get_entropy(item) >= self.entropy:
-                _sec_lst.append((item, self._get_entropy(item)))
+            if _NO_STRS in item or _NO_ENC_STRS in item:
+                _sec_lst.append((item, ""))
+            else:
+                if self._get_entropy(item) >= self.entropy:
+                    _sec_lst.append((item, self._get_entropy(item)))
             _bar.update(i)
         _bar.finish()
         return _sec_lst

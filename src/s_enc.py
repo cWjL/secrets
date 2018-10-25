@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import binascii, base64
 
 class EncodedSec():
@@ -13,19 +15,19 @@ class EncodedSec():
         @return string list
         '''
         _printable_strs = []
+        _tmp_lst = []
         for cnk in self._read_bin_data(self.bin_path, self.chunk):
             try:
                 _printable_strs.append(base64.b64decode(cnk))
             except Exception as e:
                 self._less(cnk[:(len(cnk)-4)], _printable_strs)
-
-        #tmp = self._get_printable_char_list(_printable_strs) #DEBUG
-        #print("Length " + str(len(tmp))) #DEBUG
-        #for i in tmp: #DEBUG
-        #    print(i) #DEBUG
-        #sys.exit(0) #DEBUG
-
-        return self._get_printable_char_list(_printable_strs)
+        
+        _tmp_lst = self._get_printable_char_list(_printable_strs)
+        
+        if _tmp_lst is not None and len(_tmp_lst) > 0:
+            return _tmp_lst
+        else:
+            return _tmp_lst.append("No encoded strings found")
 
     def _less(self, data_cnk, lst):
         '''
@@ -82,7 +84,8 @@ class EncodedSec():
             except:
                 continue
         if len(_result) == 0:
-            return None
+            _result.append("No encoded strings found")
+            return _result
         
         return _result
 
