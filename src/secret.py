@@ -4,16 +4,15 @@ import binascii, base64, math
 from progressbar import ProgressBar
 
 class Secret():
-    def __init__(self, bin, log_obj, opt=None):
+    def __init__(self, bin, log_obj):
         self.bin = bin
-        self.opt = opt
         self.log = log_obj
         if self._get_conf("ENT") is not None:
             self.entropy = float(self._get_conf("ENT"))
         if self._get_conf("CHUNK") is not None:
             self.chunk = int(self._get_conf("CHUNK"))
     
-    def get_secrets(self):
+    def get_secrets(self, strs=None, enc=None, hsh=None):
         '''
         Determine option to run and import the appropriate module.  Returns tuple list
         of the form (strings found, calculated entropy), or None if something went wrong
@@ -21,30 +20,42 @@ class Secret():
         @param none
         @return tuple (string, float)
         '''
-        if self.opt is None:
-            self.log.info('running all plugins')
-            from src.s_str import StringSec
-            from src.s_enc import EncodedSec
-        
-            string_sec = StringSec(self.bin, 4)
-            enc_sec = EncodedSec(self.bin, self.chunk)
-            str_list = string_sec.get_strs() + enc_sec.get_strs()
-            
-        elif self.opt == 0:
-            self.log.info('running strings plugin only')
-            from src.s_str import StringSec
-            
-            string_sec = StringSec(self.bin, 4)
-            str_list = string_sec.get_strs()
+        _list_o_lists = []
+        _master_list = []
 
-        elif self.opt > 0:
-            self.log.info('running encoded plugin only')
-            from src.s_enc import EncodedSec
+        if strs or hsh:
+            from src.s_str import StringSec  
+        
+        if strs is True:
+            self.log.info('running strings plugin')
             
+            string_sec = StringSec(self.bin, 4)
+            _str_list = string_sec.get_strs()
+            _list_o_lists.append(_str_list)
+            self.log.info('strings plugin done')
+            
+        if enc is True:
+            self.log.info('running encoded plugin')
+            from src.s_enc import EncodedSec
+
             enc_sec = EncodedSec(self.bin, self.chunk)
-            str_list = enc_sec.get_strs()
-        self.log.info('analysis complete')
-        return self._get_sec_lst(str_list)
+            _enc_list = enc_sec.get_strs()
+            _list_o_lists.append(_enc_list)
+            self.log.info('encoded plugin done')
+
+        if hsh is True:
+            self.log.info('running strings plugin with hash option')
+
+            string_sec = StringSec(self.bin, 4)
+            _hsh_str_list = string_sec.get_strs(True)
+            _list_o_lists.append(_hsh_str_list)
+            self.log.info('strings plugin with hash option done')
+            
+        self.log.info('analysis complete. generating lists')
+        for lst in _list_o_lists:
+            _master_list.extend(lst)
+        self.log.info('lists generation complete')
+        return self._get_sec_lst(_master_list)
 
     def _get_entropy(self, secret):
         '''
@@ -78,10 +89,12 @@ class Secret():
         '''
         _NO_STRS = "No strings found"
         _NO_ENC_STRS = "No encoded strings found"
+        _HASH_STR = "~~~~~~ Hash strings found ~~~~~~"
+        _STRING_STR = "~~~~~~ Strings found ~~~~~~"
         _bar = ProgressBar(maxval=len(in_list)).start()
         _sec_lst = []
         for i, item in enumerate(in_list):
-            if _NO_STRS in item or _NO_ENC_STRS in item:
+            if _NO_STRS in item or _NO_ENC_STRS in item or _HASH_STR in item or _STRING_STR in item:
                 _sec_lst.append((item, ""))
             else:
                 if self._get_entropy(item) >= self.entropy:

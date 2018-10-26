@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys,argparse,os,logging,csv,time,traceback,re
+from datetime import datetime
 import colorama
 from colorama import Fore, Style
 from src.secret import Secret
@@ -18,12 +19,13 @@ def main():
     in_file = None
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-a",action='store_true',dest='all',help='Use all methods [DEFAULT OPTION]')
-    parser.add_argument("-s",action='store_true',dest='str',help='Find ascii strings')
-    parser.add_argument("-e",action='store_true',dest='enc',help='Find encoded strings, decode them, store them as ascii')
+    parser.add_argument("-a","--all",action='store_true',dest='all',help='Use all methods [DEFAULT OPTION]')
+    parser.add_argument("-s","--strings",action='store_true',dest='strs',help='Find ascii strings')
+    parser.add_argument("-e","--encoded",action='store_true',dest='enc',help='Find base64 encoded strings in memory')
+    parser.add_argument("-m","--hashed",action='store_true',dest='hsh',help='Find hashes')
     # Future state
     #parser.add_argument("-d",action='store_true',dest='dyn',help='Run dynamic analysis, store strings as ascii')
-    parser.add_argument("-o",action='store',dest='out',help='Output file [path only, I\'ll name it!]')
+    parser.add_argument("-o",action='store',dest='out',help='Output file [path only, I\'ll name it]')
     reqd_args = parser.add_argument_group('required arguments')
     reqd_args.add_argument('-i',action='store',dest='in_file',help='Input binary',required=True)
     
@@ -51,21 +53,17 @@ def main():
             print(b_prefix+"Check your output file path. Is it correct?")
             log.error("bad output filepath: "+args.out)
             sys.exit(1)
-    if (args.str and args.enc and args.all) or (args.str and args.enc) or (not args.all and not args.str and not args.enc) or args.all:
-        opt = None
-    elif not args.enc and args.str:
-        opt = 0
-    elif args.enc:
-        opt = 1
-        
+    
     print(g_prefix+"Processing binary file...")
     time.sleep(2)
     try:
-        get_sec = Secret(in_file, log, opt)
-        sec_list = get_sec.get_secrets()
+        get_sec = Secret(in_file, log)
+        sec_list = get_sec.get_secrets(args.strs, args.enc, args.hsh)
+
         if sec_list is not None and (len(sec_list) > 0):
             print(g_prefix+"Printing strings and associated entropy")
             time.sleep(2)
+            log.info("writing out data")
             _write_to_terminal(sec_list, l_prefix)
             _write_out(out_file, sec_list)
             print(g_prefix+"Results written to "+out_file+".txt"+", and "+out_file+".csv")
@@ -104,7 +102,11 @@ def _write_to_terminal(in_list, prefix):
     @return none
     '''
     for item in in_list:
-        print(prefix+"\t"+re.sub('[]', '', item[0])+"\t"+str(item[1]))
+        if "::" in item[0]:
+            _tmp = item[0].split("::")
+            print(prefix+"\t"+re.sub('[]', '', _tmp[0])+"  "+str(item[1])+"  "+_tmp[1])
+        else:
+            print(prefix+"\t"+re.sub('[]', '', item[0])+"  "+str(item[1]))
 
 def _write_out(out_file, out_list):
     '''
@@ -119,14 +121,22 @@ def _write_out(out_file, out_list):
     @return none
     '''
     with open(out_file+".txt", 'w+') as wo:
-        wo.write("Strings found in file\n\n")
+        wo.write("["+str(datetime.now())+"] Strings found in file "+out_file+"\n\n")
         for line in out_list:
-            wo.write(line[0]+" "+str(line[1])+"\n")
+            if "::" in line[0]:
+                _tmp = line[0].split("::")
+                wo.write(_tmp[0]+" "+str(line[1])+" "+_tmp[1]+"\n")
+            else:
+                wo.write(line[0]+" "+str(line[1])+"\n")
     with open(out_file+".csv", 'w+', newline='', encoding='utf-8') as wo:
         writer = csv.writer(wo)
-        writer.writerow(["Strings found in file"])
+        writer.writerow(["["+str(datetime.now())+"] Strings found in file "+out_file])
         for line in out_list:
-            writer.writerow([line[0],line[1]])
+            if "::" in line[0]:
+                _tmp = line[0].split("::")
+                writer.writerow([_tmp[0],line[1],_tmp[1]])
+            else:
+                writer.writerow([line[0],line[1]])
     
 def ck_path(fp):
     '''
