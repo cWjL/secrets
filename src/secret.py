@@ -53,7 +53,8 @@ class Secret():
             
         self.log.info('analysis complete. generating lists')
         for lst in _list_o_lists:
-            _master_list.extend(lst)
+            if lst is not None:
+                _master_list.extend(lst)
         self.log.info('lists generation complete')
         return self._get_sec_lst(_master_list)
 
