@@ -19,15 +19,16 @@ pip install colorama
 
 **Usage:**
 ```
-usage: secrets.py [-h] [-a] [-s] [-e] [-o OUT] -i IN_FILE
+usage: secrets.py [-h] [-a] [-s] [-e] [-m] [-o OUT] -i IN_FILE
 
 optional arguments:
-  -h, --help  show this help message and exit
-  -a          Use all methods [DEFAULT OPTION]
-  -s          Find ascii strings
-  -e          Find encoded strings, decode them, store them as ascii
-  -o OUT      Output file [path only, I'll name it!]
+  -h, --help     show this help message and exit
+  -a, --all      Use all methods [DEFAULT OPTION]
+  -s, --strings  Find ascii strings
+  -e, --encoded  Find base64 encoded strings in memory
+  -m, --hashed   Find hashes
+  -o OUT         Output file [path only, I'll name it]
 
 required arguments:
-  -i IN_FILE  Input binary
+  -i IN_FILE     Input binary
 ```
