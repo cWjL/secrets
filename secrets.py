@@ -53,12 +53,15 @@ def main():
             print(b_prefix+"Check your output file path. Is it correct?")
             log.error("bad output filepath: "+args.out)
             sys.exit(1)
-    
+            
     print(g_prefix+"Processing binary file...")
     time.sleep(2)
     try:
         get_sec = Secret(in_file, log)
-        sec_list = get_sec.get_secrets(args.strs, args.enc, args.hsh)
+        if not (args.strs and args.enc and args.hsh):
+            sec_list = get_sec.get_secrets(True, True, True)
+        else:
+            sec_list = get_sec.get_secrets(args.strs, args.enc, args.hsh)
         print(g_prefix+"Done")
         time.sleep(2)
         if sec_list is not None and (len(sec_list) > 0):
