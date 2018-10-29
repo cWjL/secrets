@@ -59,7 +59,8 @@ def main():
     try:
         get_sec = Secret(in_file, log)
         sec_list = get_sec.get_secrets(args.strs, args.enc, args.hsh)
-
+        print(g_prefix+"Done")
+        time.sleep(2)
         if sec_list is not None and (len(sec_list) > 0):
             print(g_prefix+"Printing strings and associated entropy")
             time.sleep(2)

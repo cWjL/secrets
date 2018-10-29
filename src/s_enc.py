@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import binascii, base64
+from progressbar import ProgressBar
 
 class EncodedSec():
     def __init__(self, bin_path, chnk_sz):
@@ -76,17 +77,20 @@ class EncodedSec():
         @return string or none
         '''
         _result = []
-        for i in hex_list:
+        _bar = ProgressBar(maxval=len(hex_list)).start()
+        for tic, i in enumerate(hex_list):
             try:
+                _bar.update(tic)
                 _result.append(i.decode('utf-8'))
                 _result.append(i.decode('ascii'))
-                #_result.append(binascii.unhexlify(i))
             except:
+                _bar.update(tic)
                 continue
         if len(_result) == 0:
             _result.append("No encoded strings found")
+            _bar.finish()
             return _result
-        
+        _bar.finish()
         return _result
 
     def _bin_to_hex_str(self, encoded_data):
