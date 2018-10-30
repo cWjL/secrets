@@ -12,7 +12,7 @@ class Secret():
         if self._get_conf("CHUNK") is not None:
             self.chunk = int(self._get_conf("CHUNK"))
     
-    def get_secrets(self, strs=None, enc=None, hsh=None):
+    def get_secrets(self, strs=False, enc=False, hsh=False):
         '''
         Determine option to run and import the appropriate module.  Returns tuple list
         of the form (strings found, calculated entropy), or None if something went wrong

@@ -58,7 +58,7 @@ def main():
     time.sleep(2)
     try:
         get_sec = Secret(in_file, log)
-        if not (args.strs and args.enc and args.hsh):
+        if not args.strs and not args.enc and not args.hsh:
             sec_list = get_sec.get_secrets(True, True, True)
         else:
             sec_list = get_sec.get_secrets(args.strs, args.enc, args.hsh)
