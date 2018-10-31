@@ -28,7 +28,7 @@ class EncodedSec():
         if _tmp_lst is not None and len(_tmp_lst) > 0:
             return _tmp_lst
         else:
-            return _tmp_lst.append("No encoded strings found")
+            return _tmp_lst.append("~~~~~~ No encoded strings found ~~~~~~")
 
     def _less(self, data_cnk, lst):
         '''
@@ -87,7 +87,7 @@ class EncodedSec():
                 _bar.update(tic)
                 continue
         if len(_result) == 0:
-            _result.append("No encoded strings found")
+            _result.append("~~~~~~ No encoded strings found ~~~~~~")
             _bar.finish()
             return _result
         _bar.finish()

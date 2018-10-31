@@ -88,8 +88,8 @@ class Secret():
         @param string list
         @return tuple (string:float)
         '''
-        _NO_STRS = "No strings found"
-        _NO_ENC_STRS = "No encoded strings found"
+        _NO_STRS = "~~~~~~ No strings found ~~~~~~"
+        _NO_ENC_STRS = "~~~~~~ No encoded strings found ~~~~~~"
         _HASH_STR = "~~~~~~ Hash strings found ~~~~~~"
         _STRING_STR = "~~~~~~ Strings found ~~~~~~"
         _bar = ProgressBar(maxval=len(in_list)).start()

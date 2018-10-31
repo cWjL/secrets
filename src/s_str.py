@@ -28,7 +28,7 @@ class StringSec():
         if _tmp_lst is not None and len(_tmp_lst) > 1:
             return _tmp_lst
         else:
-            return _tmp_lst.append("No strings found")   
+            return _tmp_lst.append("~~~~~~ No strings found ~~~~~~")   
             
     def _find_printable_strings(self, data):
         '''
