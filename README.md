@@ -1,4 +1,4 @@
-# secrets
+# secrets v_1.0
 Script that finds ascii and base64 encoded hex strings in a compiled binary, calculates the Shannon entropy of any strings found, and saves results to text and csv files.  Minimum entropy and binary data chunk size are defined in the ```src/secrets.conf``` file.  Entropy must be a floating point number between 1.0 and 8.0 inclusive.  Chunk size is set to 512 bytes by default, but can be any size.<br />
 
 The following two directories will be created in the ```secrets.py``` root directory (if ```-o``` option is not used):<br />
