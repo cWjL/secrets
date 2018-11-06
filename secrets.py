@@ -3,8 +3,6 @@
 
 import sys,argparse,os,logging,csv,time,traceback,re
 from datetime import datetime
-import colorama
-from colorama import Fore, Style
 from src.secret import Secret
 
 def main():
@@ -13,9 +11,18 @@ def main():
 
     @param path to log
     '''
-    b_prefix = "["+Fore.RED+"*"+Style.RESET_ALL+"] "
-    g_prefix = "["+Fore.GREEN+"*"+Style.RESET_ALL+"] "
+    try:
+        import colorama
+        from colorama import Fore, Style
+        colorama.init()
+        b_prefix = "["+Fore.RED+" FAIL "+Style.RESET_ALL+"] "
+        g_prefix = "["+Fore.GREEN+"  OK  "+Style.RESET_ALL+"] "
+    except ImportError:
+        b_prefix = "[ FAIL ] "
+        g_prefix = "[  OK  ] "
+
     l_prefix = "[ ] "
+    version = "v_1.0"
     in_file = None
 
     parser = argparse.ArgumentParser()
@@ -23,13 +30,19 @@ def main():
     parser.add_argument("-s","--strings",action='store_true',dest='strs',help='Find ascii strings')
     parser.add_argument("-e","--encoded",action='store_true',dest='enc',help='Find base64 encoded strings in memory')
     parser.add_argument("-m","--hashed",action='store_true',dest='hsh',help='Find hashes')
+    parser.add_argument("-v","--version",action='store_true',dest='ver',help='Print version and exit')
     # Future state
     #parser.add_argument("-d",action='store_true',dest='dyn',help='Run dynamic analysis, store strings as ascii')
     parser.add_argument("-o",action='store',dest='out',help='Output file [path only, I\'ll name it]')
-    reqd_args = parser.add_argument_group('required arguments')
-    reqd_args.add_argument('-i',action='store',dest='in_file',help='Input binary',required=True)
+    parser.add_argument('-i',action='store',dest='in_file',help='Input binary')
     
     args = parser.parse_args()
+    if args.ver:
+        print(version)
+        sys.exit(0)
+    if not args.in_file:
+        print(b_prefix+"You must provide an input file")
+        sys.exit(1)
 
     log = logging.getLogger(__name__)
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)-8s %(message)s',
@@ -159,7 +172,7 @@ def ck_path(fp):
     return fp
 
 if __name__ == "__main__":
-    colorama.init()
+
     if not os.path.exists("logs"):
         os.makedirs("logs")
     if not os.path.exists("results"):
