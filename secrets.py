@@ -5,13 +5,11 @@ import sys,argparse,os,logging,csv,time,traceback,re
 from datetime import datetime
 from src.secret import Secret
 
-version = "v_1.0"
+version = "v_1.1"
 
 def main():
     '''
     Entry main
-
-    @param path to log
     '''
     try:
         import colorama
@@ -27,12 +25,11 @@ def main():
     in_file = None
 
     parser = argparse.ArgumentParser()
+    parser.add_argument("-v","--version",action='store_true',dest='ver',help='Print version and exit')
     parser.add_argument("-a","--all",action='store_true',dest='all',help='Use all methods [DEFAULT OPTION]')
     parser.add_argument("-s","--strings",action='store_true',dest='strs',help='Find ascii strings')
     parser.add_argument("-e","--encoded",action='store_true',dest='enc',help='Find base64 encoded strings in memory')
     parser.add_argument("-m","--hashed",action='store_true',dest='hsh',help='Find hashes')
-    parser.add_argument("-v","--version",action='store_true',dest='ver',help='Print version and exit')
-    # Future state
     #parser.add_argument("-d",action='store_true',dest='dyn',help='Run dynamic analysis, store strings as ascii')
     parser.add_argument("-o",action='store',dest='out',help='Output file [path only, I\'ll name it]')
     reqd_args = parser.add_argument_group('required arguments')
@@ -98,6 +95,12 @@ def main():
     sys.exit(0)
     
 def _get_bin_name(in_file):
+    '''
+    Find and return the name of the input binary from the file path given
+
+    @param file path
+    @return string
+    '''
     if '\\' in in_file:
         return in_file[in_file.rfind('\\')+1:]
     else:
@@ -168,6 +171,10 @@ def ck_path(fp):
     return fp
 
 if __name__ == "__main__":
+    '''
+    Check for version option here to maintain required vs. optional terminal
+    argument structure
+    '''
     try:
         if sys.argv[1] == "-v" or sys.argv[1] == "--version":
             print(version)
