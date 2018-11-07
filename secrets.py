@@ -5,6 +5,8 @@ import sys,argparse,os,logging,csv,time,traceback,re
 from datetime import datetime
 from src.secret import Secret
 
+version = "v_1.0"
+
 def main():
     '''
     Entry main
@@ -22,7 +24,6 @@ def main():
         g_prefix = "[  OK  ] "
 
     l_prefix = "[ ] "
-    version = "v_1.0"
     in_file = None
 
     parser = argparse.ArgumentParser()
@@ -34,15 +35,10 @@ def main():
     # Future state
     #parser.add_argument("-d",action='store_true',dest='dyn',help='Run dynamic analysis, store strings as ascii')
     parser.add_argument("-o",action='store',dest='out',help='Output file [path only, I\'ll name it]')
-    parser.add_argument('-i',action='store',dest='in_file',help='Input binary')
+    reqd_args = parser.add_argument_group('required arguments')
+    reqd_args.add_argument('-i',action='store',dest='in_file',help='Input binary',required=True)
     
     args = parser.parse_args()
-    if args.ver:
-        print(version)
-        sys.exit(0)
-    if not args.in_file:
-        print(b_prefix+"You must provide an input file")
-        sys.exit(1)
 
     log = logging.getLogger(__name__)
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)-8s %(message)s',
@@ -172,9 +168,13 @@ def ck_path(fp):
     return fp
 
 if __name__ == "__main__":
-
-    if not os.path.exists("logs"):
-        os.makedirs("logs")
-    if not os.path.exists("results"):
-        os.makedirs("results")
+    try:
+        if sys.argv[1] == "-v" or sys.argv[1] == "--version":
+            print(version)
+            sys.exit(0)
+    except IndexError:
+        if not os.path.exists("logs"):
+            os.makedirs("logs")
+        if not os.path.exists("results"):
+            os.makedirs("results")
     main()

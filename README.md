@@ -27,6 +27,7 @@ optional arguments:
   -s, --strings  Find ascii strings
   -e, --encoded  Find base64 encoded strings in memory
   -m, --hashed   Find hashes
+  -v, --version	 Print version and exit
   -o OUT         Output file [path only, I'll name it]
 
 required arguments:
