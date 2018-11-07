@@ -1,7 +1,12 @@
+Hash Utilities:
+	Windows:	CertUtil -hashfile [path/to/file] SHA256
+	Linux:		sha256sum [path/to/file]
+
+
 previous versions:
 
-version		file			size		SHA1
--------------------------------------------------------------------------------------------------
-1.1		secrets_v1_1.tar.gz 	591kb		1D028D4B8117B358EA1EA90CB01838CDAEFD91C2
+version		file			size		SHA256
+-------------------------------------------------------------------------------------------------------------------------
+1.1		secrets_v1_1.tar.gz 	591kb		9002c27b61b758d4344b061de32ae2ce94a46309314910b5380cd4d7c3cd8d71
 
 
