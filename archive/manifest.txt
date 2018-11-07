@@ -1,1 +1,7 @@
-"previous versions" 
+previous versions:
+
+version		file			size		SHA1
+-------------------------------------------------------------------------------------------------
+1.1		secrets_v1_1.tar.gz 	591kb		1D028D4B8117B358EA1EA90CB01838CDAEFD91C2
+
+
