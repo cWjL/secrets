@@ -1,0 +1,15 @@
+Fireeye-FLOSS (Works with Python 2)
+
+Reuiqurements:
+	vivisect:
+		pip install https://github.com/williballenthin/vivisect/zipball/master
+
+	FLOSS:
+		pip install https://github.com/fireeye/flare-floss/zipball/master
+
+Usage:
+
+	#!/usr/env/python
+	import floss
+
+Possible work-around -> call python 2 from within python 3 script...google it
