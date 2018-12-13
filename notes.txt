@@ -17,3 +17,86 @@ Possible work-around -> call python 2 from within python 3 script...google it
 Importing files in 2.7 vs 3:
 	need to create an empty file called __init__.py inside each directory containing files to be 
 	imported
+    
+Requirements:
+
+    progressbar2
+        pip install progressbar2
+        
+FLOSS/VIVISECT Notes:
+
+    import floss
+    import vivisect
+
+    MAX_FILESIZE = 16*1024*1024
+    MIN_STRINGLEN = 4
+
+    data = open("~/Documents/Practical_Malware_Anaysis_Labs/BinaryCollection/Chapter_10L/Lab10-01.exe", "r").read(MAX_FILESIZE)
+
+    # Extract static strings
+    acsii_strings = floss.strings.extract_ascii_strings(
+        data,
+        MIN_STRINGLEN
+    )
+    uft16_strings = floss.strings.extract_unicode_strings(
+        data,
+        MIN_STRINGLEN
+    )
+
+    # Prepare FLOSS for extracting hidden & encoded strings
+    vw = vivisect.VivWorkspace()
+    vw.loadFromFile("~/Documents/Practical_Malware_Anaysis_Labs/BinaryCollection/Chapter_10L/Lab10-01.exe")
+    vw.analyze()
+
+    selected_functions = floss.main.select_functions(vw, None)
+    decoding_functions_candidates = floss.identification_manager.identify_decoding_functions(
+        vw,
+        floss.main.get_all_plugins(),
+        selected_functions
+    )
+
+    # Decode & extract hidden & encoded strings
+    decoded_strings = floss.main.decode_strings(
+        vw,
+        decoding_functions_candidates,
+        MIN_STRINGLEN
+    )
+    stack_strings = floss.stackstrings.extract_stackstrings(
+        vw,
+        selected_functions,
+        MIN_STRINGLEN
+    )
+
+    >>> import vivisect
+    >>> import floss
+    >>> vw = vivisect.VivWorkspace()
+    >>> vw2 = vivisect.VivWorkspace()
+    >>> vm.loadFromFile("dyn_test")
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    NameError: name 'vm' is not defined
+    >>> vw.loadFromFile("dyn_test")
+    Failed to find file for 0x02000000 (crtstuff.c) (and filelocal == True!)
+    Failed to find file for 0x02000000 (dyn_test.c) (and filelocal == True!)
+    Failed to find file for 0x02000000 (crtstuff.c) (and filelocal == True!)
+    Failed to find file for 0x02000000 (_ITM_deregisterTMCloneTable) (and filelocal == True!)
+    Failed to find file for 0x02000000 (strlen@@GLIBC_2.2.5) (and filelocal == True!)
+    Failed to find file for 0x02000000 (printf@@GLIBC_2.2.5) (and filelocal == True!)
+    Failed to find file for 0x02000000 (__libc_start_main@@GLIBC_2.2.5) (and filelocal == True!)
+    Failed to find file for 0x02000000 (__gmon_start__) (and filelocal == True!)
+    Failed to find file for 0x02000000 (_Jv_RegisterClasses) (and filelocal == True!)
+    Failed to find file for 0x02000000 (_ITM_registerTMCloneTable) (and filelocal == True!)
+    Failed to find file for 0x02000000 (__cxa_finalize@@GLIBC_2.2.5) (and filelocal == True!)
+    'dyn_test'
+    >>> vw2.loadFromFile("level07.exe")
+    No handlers could be found for logger "vtrace.platforms.win32"
+    'level07'
+    >>> print(vw.getMeta('Platform'))
+    linux
+    >>> print(vw2.getMeta('Platform'))
+    windows
+    >>> print(vw.getMeta('Architecture'))
+    amd64
+    >>> print(vw2.getMeta('Architecture'))
+    amd64
+    >>>
