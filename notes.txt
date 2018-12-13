@@ -13,3 +13,7 @@ Usage:
 	import floss
 
 Possible work-around -> call python 2 from within python 3 script...google it
+
+Importing files in 2.7 vs 3:
+	need to create an empty file called __init__.py inside each directory containing files to be 
+	imported
