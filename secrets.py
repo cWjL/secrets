@@ -30,7 +30,8 @@ def main():
     parser.add_argument("-s","--strings",action='store_true',dest='strs',help='Find ascii strings')
     parser.add_argument("-e","--encoded",action='store_true',dest='enc',help='Find base64 encoded strings in memory')
     parser.add_argument("-m","--hashed",action='store_true',dest='hsh',help='Find hashes')
-    #parser.add_argument("-d",action='store_true',dest='dyn',help='Run dynamic analysis, store strings as ascii')
+    ##ADDED -d
+    parser.add_argument("-d","--dynamic",action='store_true',dest='dyn',help='Run dynamic analysis, store strings as ascii')
     parser.add_argument("-o",action='store',dest='out',help='Output file [path only, I\'ll name it]')
     reqd_args = parser.add_argument_group('required arguments')
     reqd_args.add_argument('-i',action='store',dest='in_file',help='Input binary',required=True)
@@ -64,10 +65,10 @@ def main():
     time.sleep(2)
     try:
         get_sec = Secret(in_file, log)
-        if not args.strs and not args.enc and not args.hsh:
-            sec_list = get_sec.get_secrets(True, True, True)
+        if not args.strs and not args.enc and not args.hsh and not args.dyn:
+            sec_list = get_sec.get_secrets(True, True, True, True)
         else:
-            sec_list = get_sec.get_secrets(args.strs, args.enc, args.hsh)
+            sec_list = get_sec.get_secrets(args.strs, args.enc, args.hsh, args.dyn)
         print(g_prefix+"Done")
         time.sleep(2)
         if sec_list is not None and (len(sec_list) > 0):
@@ -175,13 +176,12 @@ if __name__ == "__main__":
     Check for version option here to maintain required vs. optional terminal
     argument structure
     '''
-    try:
-        if sys.argv[1] == "-v" or sys.argv[1] == "--version":
-            print(version)
-            sys.exit(0)
-    except IndexError:
-        if not os.path.exists("logs"):
-            os.makedirs("logs")
-        if not os.path.exists("results"):
-            os.makedirs("results")
+    if sys.argv[1] == "-v" or sys.argv[1] == "--version":
+        print(version)
+        sys.exit(0)
+        
+    if not os.path.exists("logs"):
+        os.makedirs("logs")
+    if not os.path.exists("results"):
+        os.makedirs("results")
     main()
