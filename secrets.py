@@ -5,7 +5,7 @@ import sys,argparse,os,logging,csv,time,traceback,re
 from datetime import datetime
 from src.secret import Secret
 
-version = "v_1.1"
+version = "v_1.2"
 
 def main():
     '''
