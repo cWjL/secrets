@@ -176,12 +176,13 @@ if __name__ == "__main__":
     Check for version option here to maintain required vs. optional terminal
     argument structure
     '''
-    if sys.argv[1] == "-v" or sys.argv[1] == "--version":
-        print(version)
-        sys.exit(0)
+    if len(sys.argv) > 1:
+        if sys.argv[1] == "-v" or sys.argv[1] == "--version":
+            print(version)
+            sys.exit(0)
         
-    if not os.path.exists("logs"):
-        os.makedirs("logs")
-    if not os.path.exists("results"):
-        os.makedirs("results")
+        if not os.path.exists("logs"):
+            os.makedirs("logs")
+        if not os.path.exists("results"):
+            os.makedirs("results")
     main()
