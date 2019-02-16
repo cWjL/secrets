@@ -37,6 +37,11 @@ def main():
     reqd_args.add_argument('-i',action='store',dest='in_file',help='Input binary',required=True)
     
     args = parser.parse_args()
+    
+    if not os.path.exists("logs"):
+        os.makedirs("logs")
+    if not os.path.exists("results"):
+        os.makedirs("results")
 
     log = logging.getLogger(__name__)
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)-8s %(message)s',
@@ -180,9 +185,4 @@ if __name__ == "__main__":
         if sys.argv[1] == "-v" or sys.argv[1] == "--version":
             print(version)
             sys.exit(0)
-        
-        if not os.path.exists("logs"):
-            os.makedirs("logs")
-        if not os.path.exists("results"):
-            os.makedirs("results")
     main()
