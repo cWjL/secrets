@@ -12,7 +12,7 @@ class Secret():
         if self._get_conf("CHUNK") is not None:
             self.chunk = int(self._get_conf("CHUNK"))
     
-    def get_secrets(self, strs=False, enc=False, hsh=False, dyn=False):
+    def get_secrets(self, strs=False, enc=False, hsh=False):
         '''
         Determine option to run and import the appropriate module.  Returns tuple list
         of the form (strings found, calculated entropy), or None if something went wrong
@@ -51,11 +51,11 @@ class Secret():
             _list_o_lists.append(_hsh_str_list)
             self.log.info('strings plugin with hash option done')
         ##############WORKING###########################################  
-        if dyn is True:
-            self.log.info('running strings plugin with hash option')
-            from src.s_dyn import DynamicSec
+        # if dyn is True:
+            # self.log.info('running strings plugin with hash option')
+            # from src.s_dyn import DynamicSec
             
-            dyn_sec = DynamicSec(self.bin)
+            # dyn_sec = DynamicSec(self.bin)
         ##############WORKING###########################################    
         self.log.info('analysis complete. generating lists')
         for lst in _list_o_lists:
