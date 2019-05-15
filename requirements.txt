@@ -1,0 +1,4 @@
+colorama==0.3.7
+pyenchant==2.0.0
+progressbar2==3.39.3
+vivisect==0.0.1a
