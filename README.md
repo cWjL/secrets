@@ -13,9 +13,9 @@ The following two directories will be created in the ```secrets.py``` root direc
 
 **Package requirements:**
 
-&nbsp;&nbsp;pip install -r requirements.txt
+&nbsp;&nbsp;install requirements
 ```
-pip install colorama
+pip install -r requirements.txt
 ```
 
 **System Requirements:**
