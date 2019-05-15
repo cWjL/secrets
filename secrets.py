@@ -59,7 +59,7 @@ def main():
     
     if args.out:
         if os.path.isdir(args.out):
-            out_file = ck_path(args.out)+_get_bin_name(in_file)
+            out_file = _ck_path(args.out)+_get_bin_name(in_file)
             log.info("output file location for "+out_file+" found")
         else:
             print(b_prefix+"Check your output file path. Is it correct?")
@@ -160,7 +160,7 @@ def _write_out(out_file, out_list):
             else:
                 writer.writerow([line[0],line[1]])
     
-def ck_path(fp):
+def _ck_path(fp):
     '''
     Check for properly formatted file path
 
