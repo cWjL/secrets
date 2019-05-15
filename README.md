@@ -13,7 +13,7 @@ The following two directories will be created in the ```secrets.py``` root direc
 
 **Package requirements:**
 
-&nbsp;&nbsp;colorama
+&nbsp;&nbsp;pip install -r requirements.txt
 ```
 pip install colorama
 ```
