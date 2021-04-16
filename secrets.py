@@ -1,7 +1,14 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-import sys,argparse,os,logging,csv,time,traceback,re
+import sys
+import argparse
+import os
+import logging
+import csv
+import time
+import traceback
+import re
 from datetime import datetime
 from src.secret import Secret
 
